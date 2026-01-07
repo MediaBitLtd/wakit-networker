@@ -1,0 +1,5 @@
+export const NETWORK_OFFLINE = 'network_offline'
+export const NETWORK_ONLINE = 'network_online'
+export const NETWORK_DISCONNECTED = 'network_disconnected'
+export const NETWORK_RECONNECTED = 'network_reconnected'
+export const NETWORK_SLOW_CONNECTION = 'network_slow_connection'
