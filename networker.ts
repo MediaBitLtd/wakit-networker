@@ -64,6 +64,14 @@ const handleAPIError = (error: AxiosError|Error, config: ErrorHandlerConfig = {}
       toast.error('Unable to connect to the server. Please try again later.')
     }
 
+    if (onHandledError) {
+      onHandledError({
+        status: 502,
+        errorMessage: 'Unable to connect to the server. Please try again later.',
+        error,
+      })
+    }
+
     return {
       status: 502,
       errorMessage: 'Unable to connect to the server. Please try again later.',
@@ -75,6 +83,14 @@ const handleAPIError = (error: AxiosError|Error, config: ErrorHandlerConfig = {}
 
   if (config.showToast && toast) {
     toast.error(message)
+  }
+
+  if (onHandledError) {
+    onHandledError({
+      status: response.status,
+      errorMessage: message,
+      error,
+    })
   }
 
   return {
