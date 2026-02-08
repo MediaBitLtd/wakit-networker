@@ -4,12 +4,15 @@ import { get, post, put, config, axios, deleteRequest } from './networker.js'
 export {
   checkOnlineConnection,
   setPingUrl,
+} from './navigator.js'
+
+export {
   onNetworkOnline,
   onNetworkOffline,
   onNetworkReconnected,
   onNetworkDisconnected,
   onNetworkSlowConnection,
-} from './navigator.js'
+} from './events.js'
 
 export { handleAPIError } from './networker.js'
 
