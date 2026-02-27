@@ -3,7 +3,7 @@
   "compilerOptions": {
 //    "rootDir": "./",
     "outDir": "./dist",
-    "module": "NodeNext",
+    "module": "ESNext",
     "target": "ESNext",
     "types": [],
 
