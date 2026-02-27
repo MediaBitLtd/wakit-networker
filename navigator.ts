@@ -1,10 +1,15 @@
 import axios from 'axios'
-import { NETWORK_OFFLINE, NETWORK_ONLINE, NETWORK_DISCONNECTED, NETWORK_RECONNECTED, NETWORK_SLOW_CONNECTION } from './events.js'
+import {
+  NETWORK_OFFLINE,
+  NETWORK_ONLINE,
+  NETWORK_DISCONNECTED,
+  NETWORK_RECONNECTED,
+  NETWORK_SLOW_CONNECTION,
+  dispatch
+} from './events'
 
 const RECHECK = 25_000 // check only after x milliseconds
 const RECHECK_INTERVAL = 120_000 // automatically recheck every x milliseconds
-
-const eventListeners: { [k: string]: (() => void) [] } = {}
 
 let lastChecked: number|undefined = undefined
 let lastOnline: boolean|undefined = undefined
@@ -13,30 +18,8 @@ let lastSlow: boolean = false
 
 let getServerUrl = () => '/'
 
-const setupEventListener = (event: string, callback: () => void) => {
-  if (! eventListeners[event]) {
-    eventListeners[event] = []
-  }
-
-  // @ts-ignore
-  eventListeners[event].push(callback)
-}
-
-export const onNetworkOnline = (callback: () => void) => setupEventListener(NETWORK_ONLINE, callback)
-export const onNetworkOffline = (callback: () => void) => setupEventListener(NETWORK_OFFLINE, callback)
-export const onNetworkReconnected = (callback: () => void) => setupEventListener(NETWORK_RECONNECTED, callback)
-export const onNetworkDisconnected = (callback: () => void) => setupEventListener(NETWORK_DISCONNECTED, callback)
-export const onNetworkSlowConnection = (callback: () => void) => setupEventListener(NETWORK_SLOW_CONNECTION, callback)
-
 export const setPingUrl = (url: string) => {
   getServerUrl = () => url
-}
-
-const dispatch = (event: string) => {
-  const listeners = eventListeners[event]
-  if (listeners) {
-    listeners.forEach(handler => handler())
-  }
 }
 
 const connected = () => {
@@ -115,7 +98,7 @@ export const checkOnlineConnection = async (forced = false): Promise<boolean> =>
   }
 }
 
-if (window) {
+if (typeof window !== 'undefined') {
   window.addEventListener('online', () => checkOnlineConnection(true))
   window.addEventListener('offline', () => checkOnlineConnection(true))
   setInterval(() => checkOnlineConnection(), RECHECK_INTERVAL)

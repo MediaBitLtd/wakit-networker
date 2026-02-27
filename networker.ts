@@ -1,7 +1,7 @@
-import type { ErrorHandlerConfig, RequestConfig, ToastSystem, NetworkerConfig, NetworkerHandledError } from './index.js'
+import type { ErrorHandlerConfig, RequestConfig, ToastSystem, NetworkerConfig, NetworkerHandledError } from './index'
 import type { AxiosError, AxiosResponse } from 'axios'
 import axios, { isAxiosError } from 'axios'
-import { checkOnlineConnection } from './navigator.js'
+import { checkOnlineConnection } from './navigator'
 
 let toast: ToastSystem|undefined = undefined
 let checkInternetConnection: boolean = false
@@ -64,6 +64,14 @@ const handleAPIError = (error: AxiosError|Error, config: ErrorHandlerConfig = {}
       toast.error('Unable to connect to the server. Please try again later.')
     }
 
+    if (onHandledError) {
+      onHandledError({
+        status: 502,
+        errorMessage: 'Unable to connect to the server. Please try again later.',
+        error,
+      })
+    }
+
     return {
       status: 502,
       errorMessage: 'Unable to connect to the server. Please try again later.',
@@ -75,6 +83,14 @@ const handleAPIError = (error: AxiosError|Error, config: ErrorHandlerConfig = {}
 
   if (config.showToast && toast) {
     toast.error(message)
+  }
+
+  if (onHandledError) {
+    onHandledError({
+      status: response.status,
+      errorMessage: message,
+      error,
+    })
   }
 
   return {
