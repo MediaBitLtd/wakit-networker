@@ -98,7 +98,7 @@ export const checkOnlineConnection = async (forced = false): Promise<boolean> =>
   }
 }
 
-if (window) {
+if (typeof window !== 'undefined') {
   window.addEventListener('online', () => checkOnlineConnection(true))
   window.addEventListener('offline', () => checkOnlineConnection(true))
   setInterval(() => checkOnlineConnection(), RECHECK_INTERVAL)
