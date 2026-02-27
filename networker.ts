@@ -1,7 +1,7 @@
-import type { ErrorHandlerConfig, RequestConfig, ToastSystem, NetworkerConfig, NetworkerHandledError } from './index.js'
+import type { ErrorHandlerConfig, RequestConfig, ToastSystem, NetworkerConfig, NetworkerHandledError } from './index'
 import type { AxiosError, AxiosResponse } from 'axios'
 import axios, { isAxiosError } from 'axios'
-import { checkOnlineConnection } from './navigator.js'
+import { checkOnlineConnection } from './navigator'
 
 let toast: ToastSystem|undefined = undefined
 let checkInternetConnection: boolean = false

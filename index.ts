@@ -1,10 +1,10 @@
 import type { AxiosRequestConfig, AxiosError } from 'axios'
-import { get, post, put, config, axios, deleteRequest } from './networker.js'
+import { get, post, put, config, axios, deleteRequest } from './networker'
 
 export {
   checkOnlineConnection,
   setPingUrl,
-} from './navigator.js'
+} from './navigator'
 
 export {
   onNetworkOnline,
@@ -12,9 +12,9 @@ export {
   onNetworkReconnected,
   onNetworkDisconnected,
   onNetworkSlowConnection,
-} from './events.js'
+} from './events'
 
-export { handleAPIError } from './networker.js'
+export { handleAPIError } from './networker'
 
 export interface NetworkerConfig {
   toast?: ToastSystem | undefined;

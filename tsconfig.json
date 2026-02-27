@@ -16,7 +16,7 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
 
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "bundler",
 
     // Recommended Options
     "strict": true,

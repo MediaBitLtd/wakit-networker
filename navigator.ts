@@ -6,7 +6,7 @@ import {
   NETWORK_RECONNECTED,
   NETWORK_SLOW_CONNECTION,
   dispatch
-} from './events.js'
+} from './events'
 
 const RECHECK = 25_000 // check only after x milliseconds
 const RECHECK_INTERVAL = 120_000 // automatically recheck every x milliseconds
