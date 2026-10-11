@@ -1,5 +1,5 @@
 import type { ErrorHandlerConfig, RequestConfig, ToastSystem, NetworkerConfig, NetworkerHandledError } from './index'
-import type { AxiosError, AxiosResponse } from 'axios'
+import type { AxiosError, AxiosResponse, Method } from 'axios'
 import axios, { isAxiosError } from 'axios'
 import { checkOnlineConnection } from './navigator'
 
@@ -18,29 +18,29 @@ const config = (options: NetworkerConfig) => {
 const getErrorMessage = (response: AxiosResponse<any>) => {
   switch (response.status) {
     case 400:
-      return response.data.message || 'Something went wrong, please try again later'
+      return response.data?.message || 'Something went wrong, please try again later'
     case 401:
-      return response.data.message || 'Unauthenticated'
+      return response.data?.message || 'Unauthenticated'
     case 403:
-      return response.data.message || 'Unauthorised'
+      return response.data?.message || 'Unauthorised'
     case 404:
-      // Let of laravel for you
-      const index = response.data.message?.indexOf('App\\Models\\') || -1
+      // Let's handle laravel for you
+      const index = response.data?.message?.indexOf('App\\Models\\') ?? -1
 
       if (index !== -1) {
-        return response.data.message?.substring(
+        return response.data.message.substring(
           index + 'App\\Models\\'.length,
           response.data.message.lastIndexOf(']')
         ) + ' not found'
       }
 
-      return response.data.message || 'Not found'
+      return response.data?.message || 'Not found'
     case 429:
       return 'Too many request attempts. Please try again later.'
     case 500:
-      return response.data.message || 'Server error'
+      return response.data?.message || 'Server error'
     case 502:
-      return response.data.message || 'Service not available'
+      return response.data?.message || 'Service not available'
 
     default:
       return 'Something went wrong, please try again later'
@@ -100,38 +100,26 @@ const handleAPIError = (error: AxiosError|Error, config: ErrorHandlerConfig = {}
   }
 }
 
-const get = async <T>(url: string, config: RequestConfig = {}): Promise<T|undefined> => {
-  if (checkInternetConnection && ! await checkOnlineConnection()) {
+const request = async <T>(method: Method, url: string, body: any = undefined, config: RequestConfig = {}): Promise<T|undefined> => {
+  if (! config.skipNetworkTest && checkInternetConnection && ! await checkOnlineConnection()) {
+    if (handleErrors && ! config.skipErrorHandling && (config.showToast ?? true) && toast) {
+      toast.error('Your device is currently offline')
+    }
     return undefined
   }
 
   try {
-    const { data } = await axios.get<T>(url, config)
+    const { data } = await axios.request<T>({
+      ...config,
+      method,
+      url,
+      data: body ?? config.data,
+    })
+
     return data
   } catch (err) {
     if (handleErrors && ! config.skipErrorHandling) {
-      handleAPIError(err as Error)
-    }
-
-    if (config.onError) {
-      config.onError<T>(err as AxiosError, undefined)
-    }
-  }
-
-  return undefined
-}
-
-const post = async <T>(url: string, body: any = undefined, config: RequestConfig = {}): Promise<T|undefined> => {
-  if (checkInternetConnection && ! await checkOnlineConnection()) {
-    return undefined
-  }
-
-  try {
-    const { data } = await axios.post<T>(url, body, config)
-    return data
-  } catch (err) {
-    if (handleErrors && ! config.skipErrorHandling) {
-      handleAPIError(err as Error)
+      handleAPIError(err as Error, { showToast: config.showToast ?? true })
     }
 
     if (config.onError) {
@@ -142,50 +130,19 @@ const post = async <T>(url: string, body: any = undefined, config: RequestConfig
   return undefined
 }
 
-const put = async <T>(url: string, body: any = undefined, config: RequestConfig = {}): Promise<T|undefined> => {
-  if (checkInternetConnection && ! await checkOnlineConnection()) {
-    return undefined
-  }
+const get = <T>(url: string, config: RequestConfig = {}) => request<T>('get', url, undefined, config)
 
-  try {
-    const { data } = await axios.put<T>(url, body, config)
-    return data
-  } catch (err) {
-    if (handleErrors && ! config.skipErrorHandling) {
-      handleAPIError(err as Error)
-    }
+const post = <T>(url: string, body: any = undefined, config: RequestConfig = {}) => request<T>('post', url, body, config)
 
-    if (config.onError) {
-      config.onError<T>(err as AxiosError, body)
-    }
-  }
+const put = <T>(url: string, body: any = undefined, config: RequestConfig = {}) => request<T>('put', url, body, config)
 
-  return undefined
-}
-
-const deleteRequest = async <T>(url: string, config: RequestConfig = {}): Promise<T | void> => {
-  if (checkInternetConnection && ! await checkOnlineConnection()) {
-    return undefined
-  }
-
-  try {
-    const { data } = await axios.delete<T>(url, config)
-    return data
-  } catch (err) {
-    if (handleErrors && ! config.skipErrorHandling) {
-      handleAPIError(err as Error)
-    }
-
-    if (config.onError) {
-      config.onError<unknown>(err as AxiosError, undefined)
-    }
-  }
-}
+const deleteRequest = <T>(url: string, config: RequestConfig = {}) => request<T>('delete', url, undefined, config)
 
 export {
   axios,
   handleAPIError,
   deleteRequest,
+  request,
   config,
   post,
   get,

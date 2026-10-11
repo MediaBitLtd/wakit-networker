@@ -16,7 +16,7 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
 
-    "moduleResolution": "bundler",
+    "moduleResolution": "Bundler",
 
     // Recommended Options
     "strict": true,
@@ -25,5 +25,7 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+  },
+  "include": ["*.ts"],
+  "exclude": ["eslint.config.ts", "dist"]
 }
