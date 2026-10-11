@@ -1,5 +1,5 @@
 import type { AxiosRequestConfig, AxiosError } from 'axios'
-import { get, post, put, config, axios, deleteRequest } from './networker'
+import { get, post, put, config, axios, deleteRequest, request } from './networker'
 
 export {
   checkOnlineConnection,
@@ -26,6 +26,7 @@ export interface NetworkerConfig {
 export interface RequestConfig extends AxiosRequestConfig {
   skipNetworkTest?: boolean;
   skipErrorHandling?: boolean;
+  showToast?: boolean;
   onError?: <T = unknown>(error: AxiosError, body: T | undefined) => void;
 }
 
@@ -49,6 +50,7 @@ export const network = {
   axios,
   config,
   delete: deleteRequest,
+  request,
   post,
   put,
   get,
