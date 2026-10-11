@@ -35,6 +35,8 @@ const getErrorMessage = (response: AxiosResponse<any>) => {
       }
 
       return response.data?.message || 'Not found'
+    case 422:
+      return response.data?.message || 'You have validation errors'
     case 429:
       return 'Too many request attempts. Please try again later.'
     case 500:
