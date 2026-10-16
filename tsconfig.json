@@ -26,6 +26,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
-  "include": ["*.ts"],
-  "exclude": ["eslint.config.ts", "dist"]
+  "include": ["**/*.ts"],
+  "exclude": ["eslint.config.ts", "dist", "tests"]
 }

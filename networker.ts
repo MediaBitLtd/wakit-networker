@@ -138,6 +138,8 @@ const post = <T>(url: string, body: any = undefined, config: RequestConfig = {})
 
 const put = <T>(url: string, body: any = undefined, config: RequestConfig = {}) => request<T>('put', url, body, config)
 
+const patch = <T>(url: string, body: any = undefined, config: RequestConfig = {}) => request<T>('patch', url, body, config)
+
 const deleteRequest = <T>(url: string, config: RequestConfig = {}) => request<T>('delete', url, undefined, config)
 
 export {
@@ -146,6 +148,7 @@ export {
   deleteRequest,
   request,
   config,
+  patch,
   post,
   get,
   put,
